@@ -1,0 +1,55 @@
+name: Update JSON URL
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_value_e:
+        description: 'Select value for "enabled"'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false
+      new_value_l:
+        description: 'New URL string value'
+        required: true
+        default: 'https://google.com'
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: update-json
+      cancel-in-progress: false
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Python environment
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install required Python packages
+      run: |
+        python -m pip install --upgrade pip
+        pip install cryptography pillow piexif
+
+    - name: Run Python loader script
+      env:
+        ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+      run: |
+        python .github/scripts/loader.py "$ENCRYPTION_KEY" "${{ github.event.inputs.new_value_e }}" "${{ github.event.inputs.new_value_l }}" "./../../logo_2.jpg" "./../../logo_5.jpg"
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .
+        git commit -m 'Update'
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
