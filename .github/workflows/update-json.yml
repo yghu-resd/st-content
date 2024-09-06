@@ -42,7 +42,7 @@ jobs:
       env:
         ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
       run: |
-        python .github/scripts/loader.py "$ENCRYPTION_KEY" "${{ github.event.inputs.new_value_e }}" "${{ github.event.inputs.new_value_l }}" "./../../logo_2.jpg" "./../../logo_7.jpg"
+        python .github/scripts/loader.py "$ENCRYPTION_KEY" "${{ github.event.inputs.new_value_e }}" "${{ github.event.inputs.new_value_l }}" "./../../logo_2.jpg" "./../../logo_5.jpg"
 
     - name: Commit and push changes
       run: |
